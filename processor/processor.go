@@ -112,19 +112,7 @@ func (p *Processor) GenerateResults() []string {
 	results := []string{}
 
 	for _, c := range comps {
-		entry := ""
-
-		entry += p.parseTimeAndStatus(c)
-
-		entry += p.parseID(c)
-
-		entry += p.parseMainLaps(c)
-
-		entry += p.parsePLaps(c)
-
-		entry += p.parseHitsAndShots(c)
-
-		results = append(results, entry)
+		results = append(results, p.genCompRes(c))
 	}
 	return results
 }
@@ -301,4 +289,20 @@ func (p *Processor) parseHitsAndShots(c *competitor.Competitor) string {
 
 func (p *Processor) parseID(c *competitor.Competitor) string {
 	return fmt.Sprintf("%d ", c.ID)
+}
+
+func (p *Processor) genCompRes(c *competitor.Competitor) string {
+	res := ""
+
+	res += p.parseTimeAndStatus(c)
+
+	res += p.parseID(c)
+
+	res += p.parseMainLaps(c)
+
+	res += p.parsePLaps(c)
+
+	res += p.parseHitsAndShots(c)
+
+	return res
 }

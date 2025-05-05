@@ -1,6 +1,7 @@
 package event
 
 import (
+	"biathlon/config"
 	"bufio"
 	"fmt"
 	"os"
@@ -22,7 +23,7 @@ func ParseEvent(line string) (*Event, error) {
 	timeStr := line[1:endIdx]
 	eventPart := strings.TrimSpace(line[endIdx+1:])
 
-	parsedTime, err := time.Parse("15:04:05.000", timeStr)
+	parsedTime, err := time.Parse(config.TIME_FORMAT_WITH_MS, timeStr)
 	if err != nil {
 		return nil, fmt.Errorf("invalid time format: %v", err)
 	}

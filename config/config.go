@@ -7,6 +7,9 @@ import (
 	"time"
 )
 
+const TIME_FORMAT_NO_MS = "15:04:05"
+const TIME_FORMAT_WITH_MS = "15:04:05.000"
+
 type ConfigRaw struct {
 	Laps        int    `json:"laps"`
 	LapLen      int    `json:"lapLen"`
@@ -38,25 +41,16 @@ func LoadConfig(path string) (*Config, error) {
 		return nil, fmt.Errorf("error while parsing json")
 	}
 
-	startTime, err := time.Parse("15:04:05", rawCfg.Start)
+	startTime, err := rawCfg.parseStartTime()
 	if err != nil {
-		startTime, err = time.Parse("15:04:05.000", rawCfg.Start)
-		if err != nil {
-			return nil, fmt.Errorf("error while formatting start time: %v", err)
-		}
+		return nil, err
+
 	}
 
-	parsedDelta, err := time.Parse("15:04:05", rawCfg.StartDelta)
+	startDelta, err := rawCfg.parseDelta()
 	if err != nil {
-		parsedDelta, err = time.Parse("15:04:05.000", rawCfg.StartDelta)
-		if err != nil {
-			return nil, fmt.Errorf("error while formatting start delta: %v", err)
-		}
+		return nil, err
 	}
-
-	startDelta := time.Duration(
-		parsedDelta.Hour()*int(time.Hour) + parsedDelta.Minute()*int(time.Minute) + parsedDelta.Second()*int(time.Second),
-	)
 
 	return &Config{
 		Laps:        rawCfg.Laps,
@@ -66,4 +60,30 @@ func LoadConfig(path string) (*Config, error) {
 		Start:       startTime,
 		StartDelta:  startDelta,
 	}, nil
+}
+
+func (rawCfg *ConfigRaw) parseStartTime() (time.Time, error) {
+	stTime, err := time.Parse(TIME_FORMAT_NO_MS, rawCfg.Start)
+	if err != nil {
+		stTime, err = time.Parse(TIME_FORMAT_WITH_MS, rawCfg.Start)
+		if err != nil {
+			return stTime, fmt.Errorf("error while formatting start time: %v", err)
+		}
+	}
+	return stTime, nil
+}
+
+func (rawCfg *ConfigRaw) parseDelta() (time.Duration, error) {
+	pDelta, err := time.Parse(TIME_FORMAT_NO_MS, rawCfg.StartDelta)
+	if err != nil {
+		pDelta, err = time.Parse(TIME_FORMAT_WITH_MS, rawCfg.StartDelta)
+		if err != nil {
+			return 0, fmt.Errorf("error while formatting start delta: %v", err)
+		}
+	}
+
+	formattedDelta := time.Duration(
+		pDelta.Hour()*int(time.Hour) + pDelta.Minute()*int(time.Minute) + pDelta.Second()*int(time.Second),
+	)
+	return formattedDelta, nil
 }
