@@ -38,7 +38,7 @@ func main() {
 	}
 
 	if len(os.Args) == 4 {
-		fmt.Println("Usage: <config_path> <events_path> <output_logs_path> <results_path>")
+		fmt.Println("Usage: <config_path> <events_path> [output_logs_path] [results_path]")
 		os.Exit(1)
 	}
 
