@@ -50,3 +50,17 @@ If output file paths are provided, the application will write:
 
 - **Logs:** A list of events to the specified log file
 - **Results:** A table of results to the specified results file
+
+## Tests
+
+To run tests:
+
+```bash
+go test ./...
+```
+
+You can add the _-v_ flag to see detailed information about the tests:
+
+```bash
+go test -v ./...
+```
