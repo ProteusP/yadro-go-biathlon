@@ -27,7 +27,7 @@ func NewProcessor(cfg *config.Config, events []*event.Event) *Processor {
 }
 
 func (p *Processor) AddLog(t time.Time, msg string) {
-	log := fmt.Sprintf("[%s] %s", t.Format("15:04:05.000"), msg)
+	log := fmt.Sprintf("[%s] %s", t.Format(config.TIME_FORMAT_WITH_MS), msg)
 	p.Logs = append(p.Logs, log)
 }
 
@@ -134,7 +134,7 @@ func (p *Processor) handleRegistration(e *event.Event, _ *competitor.Competitor)
 func (p *Processor) handleStartTime(e *event.Event, comp *competitor.Competitor) {
 	if len(e.ExtraParams) == 1 {
 		startTime := e.ExtraParams[0]
-		parsedStartTime, err := time.Parse("15:04:05.000", startTime)
+		parsedStartTime, err := time.Parse(config.TIME_FORMAT_WITH_MS, startTime)
 		comp.CurLapStart = parsedStartTime
 		if err == nil {
 			comp.PlannedStart = parsedStartTime
